@@ -47,6 +47,7 @@
 	import {getHomeMultidata} from "network/home"
 	import {getHomeGoods} from "network/home"
   import {debounce} from "common/utils"
+  import {itemListenerMixin} from "common/mixin"
 	
 
 export default {
@@ -62,6 +63,7 @@ export default {
     Scroll,
     BackTop
   },
+  mixins: [itemListenerMixin],
   data() {
   	return {
   		banners: [],
@@ -83,7 +85,12 @@ export default {
     this.$refs.scroll.refresh()
   },
   deactivated(){
+    // 1.保存Y值
     this.saveY = this.$refs.scroll.scroll.y
+
+    // 2.取消全局事件的监听
+    this.$bus.$on('itemImgLoad', this.itemImgListener)
+    this.$bus.$off('itemImgLoad', this.itemImgListener)
   },
   created() {
   	// 1.请求首页多个数据
@@ -95,16 +102,17 @@ export default {
   	this.getHomeGoods('sell')
   },
   mounted() {//mounted表示挂载之后
+    // 通过混入，复用了
     // 1.监听item中图片加载完成
-    const refresh = debounce(this.$refs.scroll.refresh, 200)  //往封装的函数中传值
-    this.$bus.$on('itemImageLoad', () => {
-      refresh()
-    })
+    //const refresh = debounce(this.$refs.scroll.refresh, 200)  //往封装的函数中传值
+    // this.$bus.$on('itemImgLoad', () => {
+    //   refresh()
+    // })
 
     // 2.获取tabControl的offsetTop(由于tabControl是一个组件，不能使用offsetTop属性来获取值)
     // 但是所有的组件都有一个属性$el: 用于获取组件中的各个元素的，然后再通过组件中的元素来获取offsetTop的值
-    this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
-    console.log(this.$refs.tabControl.$el.offsetTop)
+    //this.tabOffsetTop = this.$refs.tabControl1.$el.offsetTop
+    // console.log(this.$refs.tabControl1.$el.offsetTop)
   },
   methods: {
   	// 事件监听相关的方法 
