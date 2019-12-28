@@ -1,6 +1,6 @@
 
 //防抖动操作，封装一个防抖动函数debounce
-export function debounce(func, delay) {//防抖动操作，封装一个防抖动函数debounce
+export function debounce(func, delay=100) {//防抖动操作，封装一个防抖动函数debounce，delay=100表示给一个默认值
       let timer = null
 
       return function(...args){

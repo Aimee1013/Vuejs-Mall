@@ -41,13 +41,13 @@
 	import TabControl from 'components/content/tabControl/TabControl'
 	import GoodsList from 'components/content/goods/GoodsList'
   import Scroll from 'components/common/scroll/Scroll'
-  import BackTop from 'components/content/backTop/BackTop'
+  // import BackTop from 'components/content/backTop/BackTop'
 
 	// 导入的方法类的数据
 	import {getHomeMultidata} from "network/home"
 	import {getHomeGoods} from "network/home"
   import {debounce} from "common/utils"
-  import {itemListenerMixin} from "common/mixin"
+  import {itemListenerMixin, backTopMixin} from "common/mixin"
 	
 
 export default {
@@ -61,9 +61,9 @@ export default {
   	TabControl,
   	GoodsList,
     Scroll,
-    BackTop
+    //BackTop
   },
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   data() {
   	return {
   		banners: [],
@@ -74,7 +74,7 @@ export default {
   			'sell': {page:0, list: []},
   		},
   		currentType: 'pop',
-      isShowBackTop: false,
+      //isShowBackTop: false,
       tabOffsetTop: 0, //首先定义一个变量，这个变量的值需要保存起来
       isTabFixed: false, //定义一个变量，默认不吸顶，等到tabOffsetTop到一定值时才需要吸顶
       saveY: 0,
@@ -132,16 +132,18 @@ export default {
       this.$refs.tabControl1.currentIndex = index;
       this.$refs.tabControl2.currentIndex = index;
   	},
-    backClick(){
-      // 500 表示在500毫秒之内返回顶部
-      this.$refs.scroll.scrollTo(0, 0)
-    },
+    // 抽取到混入中了，这里就不需要写了
+    // backClick(){
+    //   // 500 表示在500毫秒之内返回顶部
+    //   this.$refs.scroll.scrollTo(0, 0, 500)
+    // },
     contentScroll(position){
       // 1.判断BackTop是否显示
       this.isShowBackTop = (-position.y) > 1000
 
       // 2.决定tabControl是否吸顶(position: fixed)，当移动的位置大于tabOffsetTop时isTabFixed会为true，只是就需要吸顶
       this.isTabFixed = (-position.y) > this.tabOffsetTop
+      this.listenShowBackTop(position)
     },
     loadMore() {
       this.getHomeGoods(this.currentType)
