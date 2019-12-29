@@ -25,6 +25,8 @@ export default {
 		payload.count++
 	},
 	[ADD_TO_CART](state, payload) {
+		// 设置选中和不选中要在模型中修改状态
+		payload.checked = true
 		state.cartList.push(payload)
 	}
 }

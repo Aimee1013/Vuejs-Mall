@@ -2,9 +2,7 @@
 	<div id="detail">
 		<detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="nav"/>
 		<scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
-			<ul>
-				<li v-for="item in $store.state.cartList">{{item}}</li>
-			</ul>
+			
 			<detail-swiper :top-images="topImages"/>
 			<detail-base-info :goods="goods"/>
 			<detail-shop-info :shop="shop"/>
@@ -16,6 +14,8 @@
 		</scroll>
 		<detail-bottom-bar @addCart="addToCart"/>
 		<back-top @click.native="backClick" v-show="isShowBackTop"/>	
+    <toast :message="message" :show="show"/>
+    
 	</div>
 </template>
 
@@ -33,6 +33,7 @@
 
 	import Scroll from 'components/common/scroll/Scroll'
 	import GoodsList from 'components/content/goods/GoodsList'
+  import Toast from 'components/common/toast/Toast'
 
 
 
@@ -56,7 +57,8 @@ export default {
   	DetailCommentInfo,
   	DetailBottomBar,
   	Scroll,
-  	GoodsList
+  	GoodsList,
+    Toast
   },
   mixins: [itemListenerMixin, backTopMixin],
   data () {
@@ -70,7 +72,9 @@ export default {
     	commentInfo: {},
     	recommends: [],
     	themeTopYs: [],
-    	getThemeTopY: null
+    	getThemeTopY: null,
+      message: '',
+      show: false
     }
   },
   created(){
@@ -226,7 +230,18 @@ export default {
 
   		// 2.将商品添加到购物车中
   		// this.$store.commit('addCart', product) //将判断逻辑写在mutations的中的调用方式
-  		this.$store.dispatch('addCart', product) //将判断逻辑写在action的中的调用方式
+  		 //将判断逻辑写在action的中的调用方式
+       this.$store.dispatch('addCart', product).then(res => {
+          console.log(res)
+          this.show = true;
+          this.message = res;
+
+
+          setTimeout(() => {
+            this.show = false;
+            this.message = '';
+          }, 1500)
+       })
   	}
   }
 }
