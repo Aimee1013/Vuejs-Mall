@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 
 import FastClick from 'fastclick'
+import VueLazyLoad from 'vue-lazyload'
 
 //import toast from 'components/common/toast'
 
@@ -18,6 +19,14 @@ Vue.prototype.$bus = new Vue()
 
 // 解决移动端300ms延迟问题
 FastClick.attach(document.body)
+
+// 使用图片懒加载的插件
+// 正常的用法：
+// Vue.use(VueLazyLoad)
+// 需要添加占位图的用法：
+Vue.use(VueLazyLoad, {
+	loading: require('./assets/img/common/placeholder.png')
+})
 
 new Vue({
   render: h => h(App),
